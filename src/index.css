@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: 'Josefin Sans', sans-serif;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #131212; 
+  margin-bottom: 30px;
+}
+
+.welcome-container {
+  text-align: center;
+  max-width: 600px;
+}
+
+h1 {
+  color: #333;
+}
+
+p {
+  color: #666;
+  margin-top: 10px;
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.auth-link {
+  text-decoration: none;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #3498db;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.auth-link:hover {
+  background-color: #2980b9;
+}
+/* lOGIN PAGE */
+.login-page{
+  background-color: #1e1e1e;
+  color: white;
+  border-radius: 8px;
+  box-shadow: 0px 6px 8px 0px #1d1c1c;
+  padding: 20px;
+}
+.login-page h1 {
+  color: #fff;
+  font-size: 42px;
+  font-weight: 700;
+}
+.login-page h1 span {
+  color: #51d289;
+}
+.email-input,
+.password-input  {
+  display: grid;
+  gap: 5px;
+  padding-block: 8px;
+}
+.email-input input,
+.password-input input {
+  background-color: #1e1e1e;
+  padding: 10px;
+  outline: 1px dotted #2980b9;
+}
+.email-input label,
+.password-input label {
+  font-size: 20px;
+}
+.password-input .mismatch {
+  outline: 2px solid red;
+}
+.new-btn {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: black;
+  padding: 2px;
+  background-color: #ffe600;
+  width: 173px;
+  height: 36px;
+  border-radius: 4px;
+}
+.login-page .btn-login {
+  width: 100%;
+  font-size: 24px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: black;
+  padding: 5px;
+  margin-top: 20px;
+  background-color: #ffe600;
+}
+.login-page p{
+  text-align: center;
+  color: white;
+  font-size: 18px;
+}
+.login-page p span{
+  margin-left: 10px;
+  color: #5daee4;
+  transform: color 0.5s;
+}
+.login-page p span:hover{
+  color: #0c9eff;
+}
+
+/* Mainpage component */
+.section{
+  /* width: 309px;
+  height: 610.977px; */
+  background: #FBFBFB;
+  margin-inline: auto;
+  padding: 8.778px 28.44px 9.236px 27.213px;
+  border-radius: 10px;
+}
+.section > * {
+  height: 100%;  
+  display: grid;
+  padding-block: 10px;
+} 
+.line {
+  border-bottom: 1px dotted rgb(147, 140, 140);
+  margin: 10px 0 20px 0px;
+}
+.line-1{
+  margin-block: 20px;
+  border-bottom: 2px solid rgb(248, 233, 233);
+}
+.line-2{
+  margin-block: 20px;
+  border-bottom: 1px dotted rgb(248, 233, 233);
+}
+.icome-available{
+  background-color: black;
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.card {
+  background-color: #fffde7;
+  padding: 10px;  
+  margin-block: auto;
+  box-shadow: 0px 3.51px 13.161px 0px rgba(0, 0, 0, 0.05);
+  
+}
+.card p {
+  font-size: 14px;
+  color: black;
+}
+.icon-container{
+  border: 2px solid #51d289;
+  height: 41.239px;
+  width: 41.239px;
+  border-radius: 41.239px;
+  padding: 3.5px;
+  cursor: pointer;
+}
+.icon-user{
+  border: 2px solid #51d289;
+  height: 30.239px;
+  width: 30.239px;
+  border-radius: 41.239px;
+  padding: 3.5px;
+  cursor: pointer;
+}
+.goals-section{
+  border-left: 6px solid #51d289;
+  padding: 5px;
+}
+.icon-container-expenses{
+  background-color: #51d289;
+  height: 35.401px;
+  width: 35.401px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  cursor: pointer;
+}
+
+/* circle */
+.outer-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #51d289 0% 20%, 
+    lightgray 20% 100% 
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-inline: auto;
+  margin-block: 30px;
+}
+
+.inner-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background-color: #fff; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
+.select-btn{
+  background-color: #51D289;
+  font-weight: bold;
+  border-radius: 19.303px;
+  padding: 1.755px 11.013px 2.181px 13.161px;
+  line-height: normal;
+  height: 25px;
+}
+.shadow-mb{
+  box-shadow: 0px 4px 12px 0px rgba(255, 255, 255, 0.04);
+  
+}
+
+.mismatch {
+  border-color: red;
+}
