@@ -5,6 +5,7 @@ import Signup from "./Components/Signup/Signup";
 import Home from "./Components/Home/Home";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import { AuthContextProvider } from "./Context/AuthContext";
+import ProtectedRoutes from "./Components/ProtectedRoutes/ProtectedRoutes";
 
 const App = () => {
   return (
@@ -14,8 +15,22 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Signup />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoutes>
+                  <Home />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoutes>
+                  <Dashboard />
+                </ProtectedRoutes>
+              }
+            />
           </Routes>
         </div>
       </Router>

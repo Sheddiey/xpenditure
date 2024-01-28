@@ -59,7 +59,7 @@ const Login = () => {
             <p>
               No account yet?
               <span>
-                <NavLink to={"/"}>Sign up</NavLink>
+                <NavLink to={"/dashboard"}>Sign up</NavLink>
               </span>
             </p>
           </div>
