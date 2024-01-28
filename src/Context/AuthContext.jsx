@@ -13,6 +13,7 @@ const UserContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [userData, setUserData] = useState([]);
+  const [userExpenses, setUserExpenses] = useState([]);
 
   const createUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -26,7 +27,6 @@ export const AuthContextProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  const authUid = auth?.currentUser?.uid;
   const dataCollectionRef = collection(db, "userData");
   const getUserData = async () => {
     try {
@@ -46,6 +46,24 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const expensesCollectionRef = collection(db, "expenses");
+  const getUserExpenses = async () => {
+    try {
+      const expensesquery = query(
+        expensesCollectionRef,
+        where("userId", "==", auth?.currentUser?.uid)
+      );
+      const queryExpenseSnapshot = await getDocs(expensesquery);
+      const authUserExpenses = queryExpenseSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setUserExpenses(authUserExpenses);
+      console.log("User expenses: ", authUserExpenses);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -54,6 +72,7 @@ export const AuthContextProvider = ({ children }) => {
 
       if (currentUser) {
         await getUserData();
+        await getUserExpenses();
       }
     });
     return () => {
@@ -63,7 +82,18 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ createUser, signIn, logOut, user, getUserData, dataCollectionRef, userData }}
+      value={{
+        createUser,
+        signIn,
+        logOut,
+        user,
+        getUserData,
+        dataCollectionRef,
+        userData,
+        getUserExpenses,
+        expensesCollectionRef,
+        userExpenses,
+      }}
     >
       {children}
     </UserContext.Provider>

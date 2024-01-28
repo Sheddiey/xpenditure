@@ -8,4 +8,4 @@ const ExpenseItem = () => {
   )
 }
 
-export default ExpenseItem
+export default ExpenseItem;
