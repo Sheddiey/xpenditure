@@ -1,18 +1,25 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Signup from "./Components/Signup/Signup";
 import Home from "./Components/Home/Home";
-import Navbar from "./Components/Navbar/Navbar";
 import Dashboard from "./Components/Dashboard/Dashboard";
+import { AuthContextProvider } from "./Context/AuthContext";
 
 const App = () => {
   return (
-    <div>
-      <Dashboard />
-        
-     
-    </div>
+    <AuthContextProvider>
+      <Router>
+        <div>
+          <Routes>
+            <Route path="/" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthContextProvider>
   );
 };
 
