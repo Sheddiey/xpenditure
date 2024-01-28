@@ -58,6 +58,8 @@ export const AuthContextProvider = ({ children }) => {
         ...doc.data(),
         id: doc.id,
       }));
+      const uid = auth.currentUser.uid;
+      console.log(uid)
       setUserExpenses(authUserExpenses);
       console.log("User expenses: ", authUserExpenses);
     } catch (err) {

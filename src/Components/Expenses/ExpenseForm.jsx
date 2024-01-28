@@ -26,6 +26,11 @@ const ExpenseForm = ({onClose}) => {
     } catch(err) {
       console.error(err);
     }
+
+    setTitle("");
+    setCost("");
+
+    onClose();
   }
 
   return (

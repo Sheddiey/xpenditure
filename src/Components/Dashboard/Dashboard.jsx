@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
@@ -12,10 +12,24 @@ import ExpenseItem from "../Expenses/ExpenseItem";
 import { UserAuth } from "../../Context/AuthContext";
 
 const Dashboard = () => { 
-  const { userData } = UserAuth();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const { userData, userExpenses } = UserAuth();
+
+
+  const openForm = () => {
+    setIsFormOpen(true);
+    setEditData(null);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditData(null);
+  };
+  
   return (
     <div>
-      <Navbar userData={userData}/>
+      <Navbar userData={userData} openForm={openForm}/>
       <main>
         <div className="grid lg:grid-cols-3 md:grid-cols-2 w-[90%] md:w-[95%] mx-[auto] gap-[40px]">
           <section className="order-last w-[100%] md:col-span-2 lg:col-span-1 p-[10px] bg-[#393636] rounded-[10px] text-white mx-[auto] lg:order-first shadow-lg">
@@ -35,7 +49,9 @@ const Dashboard = () => {
             </div>
             <div className="line md:hidden"></div>
             <div
-              className='text-center  flex flex-col gap-[20px]'
+              className={`text-center  flex flex-col gap-[20px] ${
+                userExpenses.length > 0 ? "hidden" : "block"
+              }`}
             >
               <div className="text-3xl font-bold mt-[70px]">
                 <h5>
@@ -55,11 +71,21 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <ExpenseForm />
+            {isFormOpen && (
+              <ExpenseForm
+                onSave={(data) => {
+                  console.log("Saving data:", data);
+                }}
+                onClose={closeForm}
+              />
+            )}
 
-            <div>
-              <ExpenseItem />
-            </div>
+            {userExpenses.map((expense) => (
+              <div key={expense.userId}>
+                <ExpenseItem title={expense.expenseTitle} amount={expense.expenseAmount} />
+              </div>
+            ))}
+            
           </section>
           <section className="section w-[100%] shadow-mb">
             <div>
@@ -67,8 +93,8 @@ const Dashboard = () => {
                 <h2>Calculation</h2>
                 <div className="top-line line"></div>
               </div>
-              <div className="income grid text-center uppercase font-bold shadow-lg bg-white">
-                <p className="text-[12px]">Income</p>
+              <div className="income grid text-center uppercase items-center font-bold shadow-lg bg-[#fffde7] h-[100px]">
+                <p className="text-[14px]">Income</p>
                 {userData.map((userItem) => (
                   <h3 key={userItem.name} className="text-[26px]">{userItem.income.toLocaleString("en-US", {
                     style: "currency",
