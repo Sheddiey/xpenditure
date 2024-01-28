@@ -6,20 +6,31 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { createUser } = UserAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      setLoading(false);
+      return;
+    }
     try {
       await createUser(email, password);
-      console.log("User succesfully signed in.");
-      navigate("/dashboard");
+      console.log("User successfully signed up.");
+      navigate("/home");
     } catch (err) {
+      setError("Failed to sign up. Please try again later.");
       console.error(err);
     }
+    setLoading(false);
   };
+
   return (
     <main>
       <section>
@@ -28,7 +39,7 @@ const Signup = () => {
             <h1>
               Budget <span>Tracker</span>
             </h1>
-            <form action="">
+            <form onSubmit={handleSubmit}>
               <div className="email-input">
                 <label htmlFor="email-address">Email Address</label>
                 <input
@@ -58,16 +69,13 @@ const Signup = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </div>
-              <button
-                className="btn-login"
-                type="submit"
-                onClick={handleSubmit}
-              >
-                Sign Up
+              {error && <p className="error-message">{error}</p>}
+              <button className="btn-login" type="submit" disabled={loading}>
+                {loading ? "Signing Up..." : "Sign Up"}
               </button>
             </form>
             <p>
-              Already have an account?
+              Already have an account?{" "}
               <span>
                 <NavLink to={"/login"}>Sign in</NavLink>
               </span>

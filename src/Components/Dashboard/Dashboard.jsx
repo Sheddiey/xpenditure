@@ -9,11 +9,13 @@ import google from "../../Assets/google.svg";
 import facebook from "../../Assets/facebook-1.svg";
 import ExpenseForm from "../Expenses/ExpenseForm";
 import ExpenseItem from "../Expenses/ExpenseItem";
+import { UserAuth } from "../../Context/AuthContext";
 
-const Dashboard = () => {
+const Dashboard = () => { 
+  const { userData } = UserAuth();
   return (
     <div>
-      <Navbar />
+      <Navbar userData={userData}/>
       <main>
         <div className="grid lg:grid-cols-3 md:grid-cols-2 w-[90%] md:w-[95%] mx-[auto] gap-[40px]">
           <section className="order-last w-[100%] md:col-span-2 lg:col-span-1 p-[10px] bg-[#393636] rounded-[10px] text-white mx-[auto] lg:order-first shadow-lg">
@@ -67,7 +69,12 @@ const Dashboard = () => {
               </div>
               <div className="income grid text-center uppercase font-bold shadow-lg bg-white">
                 <p className="text-[12px]">Income</p>
-                <h3 className="text-[26px]">Income</h3>
+                {userData.map((userItem) => (
+                  <h3 key={userItem.name} className="text-[26px]">{userItem.income.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",})}</h3>
+                ))}
+                
               </div>
               <div>
                 <div className="outer-circle">
@@ -153,10 +160,12 @@ const Dashboard = () => {
               </div>
               <div className="bottom-line line"></div>
               <h2 className="text-center text-[24px]">Goals</h2>
-
-              <div className="goals-section ">
-                <p className="font-bold text-black">goals</p>
+              {userData.map((userItem) => (
+                <div key={userItem.name} className="goals-section ">
+                <p className="font-bold text-black">{userItem.goals}</p>
               </div>
+              ))}
+              
             </div>
           </section>
         </div>

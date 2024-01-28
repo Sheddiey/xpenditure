@@ -2,7 +2,7 @@ import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 
-const Navbar = ({openForm}) => {
+const Navbar = ({openForm, userData}) => {
     return (
         <div className="my-[25px]">
           <nav className="flex flex-col pb-[10px] md:flex-row justify-between w-[90%] md:w-[95%] mx-[auto] space-between text-[#fff] top-[0px]">
@@ -18,7 +18,9 @@ const Navbar = ({openForm}) => {
               <button className="hidden md:block new-btn" onClick={openForm}>New Expense</button>
               <div className="flex text-2xl gap-[5px] items-center">
                 <FontAwesomeIcon className="icon-user" icon={faCircleUser} />
-                  <h3 className="capitalize">username</h3>
+                {userData.map((userItem) => (
+                  <h3 key={userItem.name} className="capitalize">{userItem.name}</h3>
+                ))}
               </div>
             </div>
           </nav>

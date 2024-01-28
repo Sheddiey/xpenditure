@@ -14,7 +14,7 @@ const Login = () => {
     try {
       await signIn(email, password);
       console.log("User succesfully sign in");
-      navigate("/home");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
     }
@@ -59,7 +59,7 @@ const Login = () => {
             <p>
               No account yet?
               <span>
-                <NavLink to={"/dashboard"}>Sign up</NavLink>
+                <NavLink to={"/"}>Sign up</NavLink>
               </span>
             </p>
           </div>
