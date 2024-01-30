@@ -11,8 +11,13 @@ import { auth } from "../../firebase";
 
 const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { userData, userExpenses, getUserExpenses, expensesCollectionRef, resetExpenses } =
-    UserAuth();
+  const {
+    userData,
+    userExpenses,
+    getUserExpenses,
+    expensesCollectionRef,
+    resetExpenses,
+  } = UserAuth();
 
   const handleAddFixedExpenses = async (id, expenseTitle, expenseAmount) => {
     try {
@@ -164,7 +169,10 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="bottom-line line"></div>
-              <button onClick={resetExpenses} className="reset-btn bg-[#ffe600] w-[100%] py-[5px] rounded-[5px]">
+              <button
+                onClick={resetExpenses}
+                className="reset-btn transition-colors duration-500 hover:bg-[#fbea50] bg-[#ffe600] w-[100%] py-[5px] rounded-[5px]"
+              >
                 Reset Expenses
               </button>
             </div>
@@ -190,11 +198,9 @@ const Dashboard = () => {
                         <p className="uppercase font-medium">{data.name}</p>
                       </div>
                       <button
-                        onClick={() => handleAddFixedExpenses(
-                          data.id,
-                          data.name,
-                          data.cost
-                        )}
+                        onClick={() =>
+                          handleAddFixedExpenses(data.id, data.name, data.cost)
+                        }
                         className="select-btn"
                       >
                         select
