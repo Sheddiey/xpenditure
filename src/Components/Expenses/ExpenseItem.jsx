@@ -1,13 +1,23 @@
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
+import { UserAuth } from "../../Context/AuthContext";
 
-const ExpenseItem = ({ title, amount }) => {
+const ExpenseItem = ({ title, amount, id }) => {
   const formattedDate = new Date().toLocaleDateString();
+  const { deleteExpense } = UserAuth();
 
+  const [showDeleteButton, setShowDeleteButton] = useState(false);
+
+  const handleDelete = () => {
+    deleteExpense(id);
+  };
 
   return (
-    <div>
+    <div
+      onMouseEnter={() => setShowDeleteButton(true)}
+      onMouseLeave={() => setShowDeleteButton(false)}
+    >
       <div className="line-2"></div>
 
       <div className="flex items-center justify-between">
@@ -31,6 +41,16 @@ const ExpenseItem = ({ title, amount }) => {
           })}{" "}
         </h4>
       </div>
+      {showDeleteButton && (
+        <div className="">
+          <button
+            onClick={handleDelete}
+            className=" my-[10px] text-black bg-[#ffe600] w-[100%] py-[5px] rounded-[5px] cursor-pointer"
+          >
+            Delete expense
+          </button>
+        </div>
+      )}
     </div>
   );
 };

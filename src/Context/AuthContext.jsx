@@ -6,7 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 
 const UserContext = createContext();
 
@@ -67,6 +67,36 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const deleteExpense = async (expenseId) => {
+    try {
+      const expenseRef = doc(db, "expenses", expenseId);
+      await deleteDoc(expenseRef);
+      getUserExpenses();
+      console.log("Document deleted succesfully");
+    } catch(err) {
+      console.error("Error deleting document: ", err)
+    }
+  }
+
+  const resetExpenses = async () => {
+    try {
+      const expenseQuerySnapshot = await getDocs(
+        query(expensesCollectionRef, where("userId", "==", auth?.currentUser?.uid))
+      );
+
+      const deletePromises = [];
+      expenseQuerySnapshot.forEach((doc) => {
+        deletePromises.push(deleteDoc(doc.ref));
+      });
+
+      await Promise.all(deletePromises);
+      getUserExpenses();
+      console.log("Resetting expenses Succesful.")
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       console.log(currentUser);
@@ -95,6 +125,8 @@ export const AuthContextProvider = ({ children }) => {
         getUserExpenses,
         expensesCollectionRef,
         userExpenses,
+        deleteExpense,
+        resetExpenses,
       }}
     >
       {children}

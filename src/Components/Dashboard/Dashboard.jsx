@@ -2,34 +2,55 @@ import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import netflix from "../../Assets/netflix-1-logo-svgrepo-com.svg";
-import spotify from "../../Assets/spotify.svg";
-import amazon from "../../Assets/amazon.svg";
-import google from "../../Assets/google.svg";
-import facebook from "../../Assets/facebook-1.svg";
 import ExpenseForm from "../Expenses/ExpenseForm";
 import ExpenseItem from "../Expenses/ExpenseItem";
 import { UserAuth } from "../../Context/AuthContext";
+import { fixedExpensesData } from "../../Assets/data";
+import { addDoc } from "firebase/firestore";
+import { auth } from "../../firebase";
 
-const Dashboard = () => { 
+const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
-  const { userData, userExpenses } = UserAuth();
+  const { userData, userExpenses, getUserExpenses, expensesCollectionRef, resetExpenses } =
+    UserAuth();
 
+  const handleAddFixedExpenses = async (id, expenseTitle, expenseAmount) => {
+    try {
+      await addDoc(expensesCollectionRef, {
+        expenseTitle: expenseTitle,
+        expenseAmount: expenseAmount,
+        userId: auth?.currentUser?.uid,
+      });
+      getUserExpenses();
+      console.log("Fixed expenses added to firebase succesfully");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const totalExpenses = userExpenses.reduce(
+    (total, expense) => total + expense.expenseAmount,
+    0
+  );
+
+  const totalIncome = userData.reduce(
+    (total, income) => total + income.income,
+    0
+  );
+  const availableIncome = totalIncome - totalExpenses;
+  const percentageSpent = ((totalExpenses / totalIncome) * 100).toFixed(0);
 
   const openForm = () => {
     setIsFormOpen(true);
-    setEditData(null);
   };
 
   const closeForm = () => {
     setIsFormOpen(false);
-    setEditData(null);
   };
-  
+
   return (
     <div>
-      <Navbar userData={userData} openForm={openForm}/>
+      <Navbar userData={userData} openForm={openForm} />
       <main>
         <div className="grid lg:grid-cols-3 md:grid-cols-2 w-[90%] md:w-[95%] mx-[auto] gap-[40px]">
           <section className="order-last w-[100%] md:col-span-2 lg:col-span-1 p-[10px] bg-[#393636] rounded-[10px] text-white mx-[auto] lg:order-first shadow-lg">
@@ -47,7 +68,6 @@ const Dashboard = () => {
                 </select>
               </div>
             </div>
-            <div className="line md:hidden"></div>
             <div
               className={`text-center  flex flex-col gap-[20px] ${
                 userExpenses.length > 0 ? "hidden" : "block"
@@ -71,6 +91,15 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {userExpenses.map((expense) => (
+              <div key={expense.id}>
+                <ExpenseItem
+                  title={expense.expenseTitle}
+                  amount={expense.expenseAmount}
+                  id={expense.id}
+                />
+              </div>
+            ))}
             {isFormOpen && (
               <ExpenseForm
                 onSave={(data) => {
@@ -79,13 +108,6 @@ const Dashboard = () => {
                 onClose={closeForm}
               />
             )}
-
-            {userExpenses.map((expense) => (
-              <div key={expense.userId}>
-                <ExpenseItem title={expense.expenseTitle} amount={expense.expenseAmount} />
-              </div>
-            ))}
-            
           </section>
           <section className="section w-[100%] shadow-mb">
             <div>
@@ -96,16 +118,27 @@ const Dashboard = () => {
               <div className="income grid text-center uppercase items-center font-bold shadow-lg bg-[#fffde7] h-[100px]">
                 <p className="text-[14px]">Income</p>
                 {userData.map((userItem) => (
-                  <h3 key={userItem.name} className="text-[26px]">{userItem.income.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",})}</h3>
+                  <h3 key={userItem.id} className="text-[26px]">
+                    {userItem.income.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </h3>
                 ))}
-                
               </div>
               <div>
-                <div className="outer-circle">
+                <div
+                  style={{ "--stop-position": percentageSpent }}
+                  className={`outer-circle ${
+                    percentageSpent > 70
+                      ? "high"
+                      : percentageSpent > 40
+                      ? "medium"
+                      : ""
+                  }`}
+                >
                   <div className="inner-circle">
-                    <p className="text-[24px] text-black">20%</p>
+                    <p className="text-[24px] text-black">{percentageSpent}%</p>
                     <p className="bottom-[50px] absolute">spent</p>
                   </div>
                 </div>
@@ -113,15 +146,25 @@ const Dashboard = () => {
               <div className="flex gap-[10px]">
                 <div className="icome-available shadow py-[3px] text-bold uppercase">
                   <p className="text-white text-[10px]">Available</p>
-                  <p className="text-[16px] text-[#51D289]">$2,000.00</p>
+                  <p className="text-[16px] text-[#51D289]">
+                    {availableIncome.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </p>
                 </div>
                 <div className="icome-available shadow uppercase">
                   <p className="text-white text-[10px]">SPent</p>
-                  <p className="text-[16px] text-[#ffe600]">$800.00</p>
+                  <p className="text-[16px] text-[#ffe600]">
+                    {totalExpenses.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
+                  </p>
                 </div>
               </div>
               <div className="bottom-line line"></div>
-              <button className="reset-btn bg-[#ffe600] w-[100%] py-[5px] rounded-[5px]">
+              <button onClick={resetExpenses} className="reset-btn bg-[#ffe600] w-[100%] py-[5px] rounded-[5px]">
                 Reset Expenses
               </button>
             </div>
@@ -136,62 +179,37 @@ const Dashboard = () => {
                 <h3 className="text-center uppercase mb-[20px] font-bold text-[14px]">
                   Choose any fix Expenses
                 </h3>
+
                 <div className="grid gap-[20px]">
-                  <div className="flex justify-between">
-                    <div className="flex gap-[15px]">
-                      <div className="icon-container">
-                        <img src={netflix} alt="" />
+                  {fixedExpensesData.map((data) => (
+                    <div key={data.id} className="flex justify-between">
+                      <div className="flex gap-[15px]">
+                        <div className="icon-container">
+                          <img src={data.icon} alt="" />
+                        </div>
+                        <p className="uppercase font-medium">{data.name}</p>
                       </div>
-                      <p>NETFLIX</p>
+                      <button
+                        onClick={() => handleAddFixedExpenses(
+                          data.id,
+                          data.name,
+                          data.cost
+                        )}
+                        className="select-btn"
+                      >
+                        select
+                      </button>
                     </div>
-                    <button className="select-btn">select</button>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex gap-[15px]">
-                      <div className="icon-container">
-                        <img src={spotify} alt="" />
-                      </div>
-                      <p>SPOTIFY</p>
-                    </div>
-                    <button className="select-btn">select</button>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex gap-[15px]">
-                      <div className="icon-container">
-                        <img src={amazon} alt="" />
-                      </div>
-                      <p>AMAZON</p>
-                    </div>
-                    <button className="select-btn">select</button>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex gap-[15px]">
-                      <div className="icon-container">
-                        <img src={google} alt="" />
-                      </div>
-                      <p>GOOGLE</p>
-                    </div>
-                    <button className="select-btn">select</button>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex gap-[15px]">
-                      <div className="icon-container">
-                        <img src={facebook} alt="" />
-                      </div>
-                      <p>FACEBOOK</p>
-                    </div>
-                    <button className="select-btn">select</button>
-                  </div>
+                  ))}
                 </div>
               </div>
               <div className="bottom-line line"></div>
               <h2 className="text-center text-[24px]">Goals</h2>
               {userData.map((userItem) => (
                 <div key={userItem.name} className="goals-section ">
-                <p className="font-bold text-black">{userItem.goals}</p>
-              </div>
+                  <p className="font-bold text-black">{userItem.goals}</p>
+                </div>
               ))}
-              
             </div>
           </section>
         </div>

@@ -4,6 +4,30 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-start-low: #51d289;
+  --color-end-low: lightgray;
+  --color-start-medium: #ffcc66; 
+  --color-end-medium: lightgray; 
+  --color-start-high: #ff6666; 
+  --color-end-high: lightgray; 
+}
+
+/* gradient colors for the circle */
+.outer-circle {
+  --color-start: var(--color-start-low);
+  --color-end: var(--color-end-low);
+}
+
+.outer-circle.high {
+  --color-start: var(--color-start-high);
+}
+
+.outer-circle.medium {
+  --color-start: var(--color-start-medium);
+}
+
+
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
@@ -201,10 +225,12 @@ p {
   height: 200px;
   border-radius: 50%;
   background: conic-gradient(
-    #51d289 0% 20%, 
-    lightgray 20% 100% 
+    var(--color-start) 0%, 
+    var(--color-start) calc(var(--stop-position) * 3.6deg), 
+    var(--color-end) calc(var(--stop-position) * 3.6deg), 
+    var(--color-end) 100% 
   );
-  display: flex;
+    display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
