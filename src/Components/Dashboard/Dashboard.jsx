@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faPlus } from "@fortawesome/free-solid-svg-icons";
 import ExpenseForm from "../Expenses/ExpenseForm";
 import ExpenseItem from "../Expenses/ExpenseItem";
 import { UserAuth } from "../../Context/AuthContext";
@@ -114,7 +114,7 @@ const Dashboard = () => {
               />
             )}
           </section>
-          <section className="section w-[100%] shadow-mb">
+          <section className="section w-[100%] shadow-mb relative">
             <div>
               <div className="text-center text-[24px]">
                 <h2>Calculation</h2>
@@ -175,6 +175,9 @@ const Dashboard = () => {
               >
                 Reset Expenses
               </button>
+              <div onClick={openForm} className="bg-[#ffe600] rounded-[50%] w-[50px] h-[50px] flex items-center justify-center right-[-25px] md:hidden transition-colors duration-500 hover:bg-[#fbea50] cursor-pointer  bottom-[-25px] absolute">
+                <FontAwesomeIcon icon={faPlus} className="text-3xl " />
+              </div>
             </div>
           </section>
           <section className="section w-[100%]">
